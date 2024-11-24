@@ -5,24 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TODO - Homepage</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .sidebar {
-      min-height: 100vh;
-    }
-    .task-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .completed {
-      text-decoration: line-through;
-      color: #6c757d;
-    }
-    .profile-info {
-      display: none;
-    }
-  </style>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
+
+</head>
+<style>
+    .sidebar {
+    min-height: 100vh;
+    background-color: #add8e6; /* Light blue color */
+  }
+  .task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .completed {
+    text-decoration: line-through;
+    color: #6c757d;
+  }
+  .profile-info {
+    display: none;
+  }
+  #current-datetime {
+  font-family: 'Dancing Script, cursive';/* Stylish Google Font */
+  font-size: 20px;
+  font-weight: bold;
+  color: #6A5ACD;  /* Attractive color */
+  text-align: center;
+  line-height: 1.5;
+  letter-spacing: 0.0px;  /* Slightly spaced letters for better readability */
+}
+</style>
 <body class="bg-light">
 
   <!-- Navigation Bar -->
@@ -47,27 +61,54 @@
       </div>
     </div>
   </nav>
-
-  <div class="container-fluid">
+   <div class="container-fluid">
     <div class="row">
       <!-- Sidebar for Date Filters -->
-      <nav class="col-md-3 col-lg-2 bg-light sidebar py-4">
+      <nav class="col-md-3 col-lg-2 sidebar py-4" style="background-color: #ADD8E6;">
         <div class="container">
-          <div id="current-datetime" class="mb-4 text-muted"></div>
+          <div class="p-1 border rounded shadow-sm bg-info"> <!-- Light blue background from Bootstrap -->
+            <div id="current-datetime" class="mb-2 text-muted" >
+          </div>
+        </div>
           <!-- Date and time will be dynamically added here -->
-          <h5>Filter by Date</h5>
+           
+          <h5 id="user-info" class="d-flex align-items-center">
+            <img src="avatar.jpg" id="user-avatar" alt="User Avatar" class="rounded-circle" style="width: 50px; height: 50px; margin-right: 10px;margin-top: 10px;">
+            <span id="user-name">User Name</span>
+          </h5>
           <ul class="list-group">
             <li class="list-group-item">
-              <a href="#" class="text-decoration-none" onclick="loadTasks('today')">Today</a>
+              <input type="text" class="form-control" id="task-search" placeholder="Search tasks..." onkeyup="searchTasks()">
             </li>
             <li class="list-group-item">
-              <a href="#" class="text-decoration-none" onclick="loadTasks('tomorrow')">Tomorrow</a>
+              <a href="#" class="text-decoration-none" onclick="loadTasks('today')">
+                <i class="fas fa-calendar-day"></i> Today
+              </a>
             </li>
             <li class="list-group-item">
-              <a href="#" class="text-decoration-none" onclick="loadTasks('upcoming')">Upcoming</a>
+              <a href="#" class="text-decoration-none" onclick="loadTasks('upcoming')">
+                <i class="fas fa-calendar-plus"></i> Upcoming
+              </a>
             </li>
             <li class="list-group-item">
-              <a href="#" class="text-decoration-none" onclick="loadTasks('all')">All Tasks</a>
+              <a href="#" class="text-decoration-none" onclick="loadTasks('inbox')">
+                <i class="fas fa-inbox"></i> Inbox
+              </a>
+            </li>
+            <li class="list-group-item">
+              <a href="#" class="text-decoration-none" onclick="loadTasks('notification')">
+                <i class="fas fa-bell"></i> Notification
+              </a>
+            </li>
+            <li class="list-group-item">
+              <a href="#" class="text-decoration-none" onclick="loadTasks('myproject')">
+                <i class="fas fa-project-diagram"></i> My Project
+              </a>
+            </li>
+            <li class="list-group-item">
+              <a href="#" class="text-decoration-none" onclick="loadTasks('team')">
+                <i class="fas fa-users"></i> Team
+              </a>
             </li>
           </ul>
         </div>
@@ -88,8 +129,20 @@
 
         <!-- Task List -->
         <div class="d-flex justify-content-between align-items-center my-4">
-          <h2 id="task-category-title">Tasks for Today</h2>
+          <h2 id="task-category-title">Today</h2>
           <button class="btn btn-primary" onclick="showAddTaskForm()">Add Task</button>
+        </div>
+        <!-- Filter status -->
+        <div class="mb-3">
+          <label for="task-status" class="form-label">Filter</label>
+          <select class="form-select" id="task-status" onchange="filterTasksByStatus()">
+            <option value="all">All Tasks</option>
+            <option value="completed">Completed</option>
+            <option value="incomplete">Incomplete</option>
+            <option value="High">High Priority</option>
+            <option value="Medium">Medium Priority</option>
+            <option value="Low">Low Priority</option>
+          </select>
         </div>
 
         <ul class="list-group mb-4" id="task-list">
@@ -117,6 +170,14 @@
                 <label for="taskTime" class="form-label">Due Time</label>
                 <input type="time" class="form-control" id="taskTime" required>
               </div>
+              <div class="mb-3">
+                <label for="taskPriority" class="form-label">Priority</label>
+                <select class="form-select" id="taskPriority" required>
+                  <option value="Low">Low</option>
+                  <option value="Medium">Medium</option>
+                  <option value="High">High</option>
+                </select>
+              </div>
               <button type="submit" class="btn btn-primary w-100" id="submit-btn">Add Task</button>
             </form>
           </div>
@@ -128,15 +189,27 @@
   <script>
     const tasks = {
       today: [
-        { id: 1, title: "Task 1", description: "Description for task 1", dueDate: "2024-11-10T09:00", completed: false },
-        { id: 2, title: "Task 2", description: "Description for task 2", dueDate: "2024-11-10T10:00", completed: false },
+        { id: 1, title: "Gym", description: "Description for task 1", dueDate: "2024-11-23T01:00", completed: false, priority: "High" },
+        { id: 2, title: "Homework", description: "Description for task 2", dueDate: "2024-11-10T10:00", completed: false,priority: "Medium" },
       ],
       tomorrow: [
         { id: 3, title: "Task 3", description: "Description for task 3", dueDate: "2024-11-11T09:00", completed: false }
       ],
       upcoming: [
-        { id: 4, title: "Task 4", description: "Description for task 4", dueDate: "2024-11-15T12:00", completed: false },
+        { id: 4, title: "Project", description: "Description for task 4", dueDate: "2024-11-15T12:00", completed: false },
         { id: 5, title: "Task 5", description: "Description for task 5", dueDate: "2024-11-17T14:00", completed: false },
+      ],
+      notifications: [
+        { id: 1, message: "New task assigned: Homework", time: "2024-11-22T08:00" },
+        { id: 2, message: "Meeting scheduled for tomorrow at 10 AM", time: "2024-11-22T09:30" },
+      ],
+          myproject: [
+        { id: 8, title: "Task 8", description: "Description for task 8", dueDate: "2024-11-15T12:00", completed: false },
+        { id: 9, title: "Task 9", description: "Description for task 9", dueDate: "2024-11-17T14:00", completed: false },
+      ],
+      team: [
+        { id: 6, title: "Task 6", description: "Description for task 6", dueDate: "2024-11-15T12:00", completed: false },
+        { id: 7, title: "Task 7", description: "Description for task 7", dueDate: "2024-11-17T14:00", completed: false },
       ],
       all: []
     };
@@ -148,36 +221,70 @@
       const currentDateTime = new Date();
       const formattedDate = currentDateTime.toLocaleDateString();
       const formattedTime = currentDateTime.toLocaleTimeString();
-      document.getElementById("current-datetime").innerText = `Date: ${formattedDate}, Time: ${formattedTime}`;
+      document.getElementById("current-datetime").innerText = `ToDay\n ${formattedDate}\n ${formattedTime}`;
+
     }
 
     setInterval(updateDateTime, 1000);  // Update the time every second
 
     function loadTasks(category) {
-      document.getElementById("task-category-title").innerText = `Tasks for ${category.charAt(0).toUpperCase() + category.slice(1)}`;
-      const taskList = document.getElementById("task-list");
-      taskList.innerHTML = "";
+  document.getElementById("task-category-title").innerText = `${category.charAt(0).toUpperCase() + category.slice(1)}`;
+  const taskList = document.getElementById("task-list");
+  taskList.innerHTML = ""; // Clear the current list
 
-      tasks[category].forEach(task => {
-        const taskItem = document.createElement("li");
-        taskItem.classList.add("list-group-item", "task-item");
-        taskItem.classList.toggle('completed', task.completed); // Apply 'completed' class if task is done
-        taskItem.innerHTML = `  
-          <div>
-            <h6 class="mb-1">${task.title}</h6>
-            <small class="text-muted">${task.description}</small>
-            <br>
-            <small class="text-muted">Due: ${task.dueDate}</small>
-          </div>
-          <div>
-            <button class="btn btn-sm btn-warning" onclick="editTask(${task.id})">Edit</button>
-            <button class="btn btn-sm btn-danger" onclick="deleteTask(${task.id})">Delete</button>
-            <button class="btn btn-sm btn-success" onclick="markAsDone(${task.id})">${task.completed ? 'Undo' : 'Mark as Done'}</button>
-          </div>
-        `;
-        taskList.appendChild(taskItem);
-      });
-    }
+  const statusFilter = document.getElementById("task-status").value;  // Get current filter status
+
+  
+  if (category === 'notification') {
+    // Load notifications
+    tasks.notifications.forEach(notification => {
+      const notificationItem = document.createElement("li");
+      notificationItem.classList.add("list-group-item", "task-item");
+      notificationItem.innerHTML = `
+        <div>
+          <h6 class="mb-1">${notification.message}</h6>
+          <small class="text-muted">Time: ${new Date(notification.time).toLocaleString()}</small>
+          
+        </div>
+      `;
+      taskList.appendChild(notificationItem);
+    });
+  } else {
+    // Filter tasks by status (completed, incomplete, all)
+    const filteredTasks = tasks[category].filter(task => {
+      if (statusFilter === 'all') {
+        return true;
+      } else if (statusFilter === 'completed' && task.completed) {
+        return true;
+      } else if (statusFilter === 'incomplete' && !task.completed) {
+        return true;
+      }
+      return false;
+    });
+
+    // Load the filtered tasks
+    filteredTasks.forEach(task => {
+      const taskItem = document.createElement("li");
+      taskItem.classList.add("list-group-item", "task-item");
+      taskItem.classList.toggle('completed', task.completed);
+      taskItem.innerHTML = `
+        <div>
+          <h6 class="mb-1">${task.title}</h6>
+          <small class="text-muted">${task.description}</small>
+          <br>
+          <small class="text-muted">Due: ${task.dueDate}</small>
+        </div>
+        <div>
+          <button class="btn btn-sm btn-warning" onclick="editTask(${task.id})">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteTask(${task.id})">Delete</button>
+          <button class="btn btn-sm btn-success" onclick="markAsDone(${task.id})">${task.completed ? 'Undo' : 'Mark as Done'}</button>
+          <button class="btn btn-sm btn-info" onclick="shareTask(${task.id})">Share</button>
+        </div>
+      `;
+      taskList.appendChild(taskItem);
+    });
+  }
+}
 
     function showAddTaskForm() {
       document.getElementById("add-task-form").style.display = "block";
@@ -195,53 +302,69 @@
     }
 
     function submitTask(event) {
-      event.preventDefault();
-      const title = document.getElementById("taskTitle").value;
-      const description = document.getElementById("taskDescription").value;
-      const dueDate = document.getElementById("taskDate").value;
-      const dueTime = document.getElementById("taskTime").value;
-      const taskId = editingTask ? editingTask.id : new Date().getTime();
+  event.preventDefault();
+  const title = document.getElementById("taskTitle").value;
+  const description = document.getElementById("taskDescription").value;
+  const dueDate = document.getElementById("taskDate").value;
+  const dueTime = document.getElementById("taskTime").value;
+  
+  // Create a new task object
+  const newTask = {
+    id: editingTask ? editingTask.id : Date.now(),  // Use editing task ID or generate a new one
+    title: title,
+    description: description,
+    dueDate: `${dueDate}T${dueTime}`,
+    completed: false,
+    priority: document.getElementById("taskPriority").value,
+  };
 
-      const newTask = {
-        id: taskId,
-        title,
-        description,
-        dueDate: `${dueDate}T${dueTime}`,
-        completed: false
-      };
-
-      if (editingTask) {
-        tasks.today = tasks.today.map(task => task.id === taskId ? newTask : task);
-      } else {
-        tasks.today.push(newTask);
-      }
-
-      loadTasks('today');
-      hideAddTaskForm();
+  // Add or update the task in the correct category
+  const category = document.getElementById("task-category-title").innerText.toLowerCase();
+  if (editingTask) {
+    // Update an existing task
+    const index = tasks[category].findIndex(task => task.id === editingTask.id);
+    if (index !== -1) {
+      tasks[category][index] = newTask;
     }
+  } else {
+    // Add a new task
+    tasks[category].push(newTask);
+  }
 
-    function deleteTask(id) {
-      tasks.today = tasks.today.filter(task => task.id !== id);
-      loadTasks('today');
-    }
+  // Reload the task list
+  loadTasks(category);
+  hideAddTaskForm();
+}
 
-    function editTask(id) {
-      editingTask = tasks.today.find(task => task.id === id);
-      document.getElementById("taskTitle").value = editingTask.title;
-      document.getElementById("taskDescription").value = editingTask.description;
-      document.getElementById("taskDate").value = editingTask.dueDate.split('T')[0];
-      document.getElementById("taskTime").value = editingTask.dueDate.split('T')[1];
-      document.getElementById("add-task-form").style.display = "block";
-      document.getElementById("form-title").innerText = "Edit Task";
-      document.getElementById("submit-btn").innerText = "Update Task";
-    }
+function editTask(taskId) {
+  const category = document.getElementById("task-category-title").innerText.toLowerCase();
+  const task = tasks[category].find(t => t.id === taskId);
+  if (task) {
+    editingTask = task;
+    document.getElementById("taskTitle").value = task.title;
+    document.getElementById("taskDescription").value = task.description;
+    document.getElementById("taskDate").value = task.dueDate.split("T")[0];
+    document.getElementById("taskTime").value = task.dueDate.split("T")[1];
+    document.getElementById("taskPriority").value = task.priority;  // Set priority in the form
+    document.getElementById("form-title").innerText = "Edit Task";
+    document.getElementById("submit-btn").innerText = "Update Task";
+    document.getElementById("add-task-form").style.display = "block";
+  }
+}
 
-    function markAsDone(id) {
-      const task = tasks.today.find(task => task.id === id);
-      task.completed = !task.completed;
-      loadTasks('today');
-    }
-
+function deleteTask(taskId) {
+  const category = document.getElementById("task-category-title").innerText.toLowerCase();
+  tasks[category] = tasks[category].filter(t => t.id !== taskId); // Remove task from list
+  loadTasks(category);
+}
+function markAsDone(taskId) {
+  const category = document.getElementById("task-category-title").innerText.toLowerCase();
+  const task = tasks[category].find(t => t.id === taskId);
+  if (task) {
+    task.completed = !task.completed;  // Toggle completed status
+    loadTasks(category);  // Reload task list to reflect changes
+  }
+}
     function showProfile() {
       document.getElementById("profile-info").style.display = "block";
     }
@@ -252,6 +375,212 @@
 
     // Initialize with tasks for today
     loadTasks('today');
+    function searchTasks() {
+  const searchTerm = document.getElementById("task-search").value.toLowerCase();
+  const currentCategory = document.getElementById("task-category-title").innerText.toLowerCase();
+
+  // Retrieve tasks from the current category
+  const categoryTasks = tasks[currentCategory] || [];
+
+  // Filter tasks based on the search term
+  const filteredTasks = categoryTasks.filter(task =>
+    task.title.toLowerCase().includes(searchTerm) ||
+    task.description.toLowerCase().includes(searchTerm) ||
+    task.dueDate.includes(searchTerm)
+  );
+
+  // Render the filtered tasks
+  renderTasks(filteredTasks);
+}
+
+
+function loadTasksFromSearch(filteredTasks) {
+  const taskList = document.getElementById("task-list");
+  taskList.innerHTML = "";  // Clear the current list
+
+  filteredTasks.forEach(task => {
+    const taskItem = document.createElement("li");
+    taskItem.classList.add("list-group-item", "task-item");
+    taskItem.classList.toggle('completed', task.completed); // Apply 'completed' class if task is done
+    taskItem.innerHTML = `
+      <div>
+        <h6 class="mb-1">${task.title}</h6>
+        <small class="text-muted">${task.description}</small>
+        <br>
+        <small class="text-muted">Due: ${task.dueDate}</small>
+        ${task.shared ? '<span class="badge bg-info ms-2">Shared</span>' : ''}
+      </div>
+      <div>
+        <button class="btn btn-sm btn-warning" onclick="editTask(${task.id})">Edit</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteTask(${task.id})">Delete</button>
+        <button class="btn btn-sm btn-success" onclick="markAsDone(${task.id})">${task.completed ? 'Undo' : 'Mark as Done'}</button>
+        
+      </div>
+    `;
+    taskList.appendChild(taskItem);
+  });
+}
+
+function filterTasksByStatus() {
+  const currentCategory = document.getElementById("task-category-title").innerText.toLowerCase();  // Get the category title
+  loadTasks(currentCategory);  // Re-load tasks for the current category with the new status filter
+}
+
+function renderTasks(taskList) {
+  const taskListElement = document.getElementById("task-list");
+  taskListElement.innerHTML = "";
+  taskList.forEach(task => {
+    const taskItem = document.createElement("li");
+    taskItem.classList.add("list-group-item", "task-item");
+    taskItem.classList.toggle('completed', task.completed);
+
+    // Determine the priority badge class
+    let priorityClass = '';
+    if (task.priority === 'High') priorityClass = 'badge-danger';
+    if (task.priority === 'Medium') priorityClass = 'badge-warning';
+    if (task.priority === 'Low') priorityClass = 'badge-success';
+
+    taskItem.innerHTML = `
+      <div>
+        <h6 class="mb-1">${task.title}</h6>
+        <small class="text-muted">${task.description}</small><br>
+        <small class="text-muted">Due: ${task.dueDate}</small>
+        ${task.shared ? '<span class="badge bg-info ms-2">Shared</span>' : ''}
+        <span class="badge ${priorityClass} ms-2">${task.priority}</span>  <!-- Display priority -->
+      </div>
+      <div>
+        <button class="btn btn-sm btn-warning" onclick="editTask(${task.id})">Edit</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteTask(${task.id})">Delete</button>
+        <button class="btn btn-sm btn-success" onclick="markAsDone(${task.id})">${task.completed ? 'Undo' : 'Mark as Done'}</button>
+        <button class="btn btn-sm btn-info" onclick="shareTask(${task.id})">Share</button> 
+      </div>
+    `;
+    taskListElement.appendChild(taskItem);
+  });
+}
+
+// local storage for persisetence
+function saveTasks() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function loadTasks(category) {
+  document.getElementById("task-category-title").innerText = `${category.charAt(0).toUpperCase() + category.slice(1)}`;
+  const taskList = tasks[category] || [];
+  renderTasks(taskList);
+}
+
+
+// Call this function when the page loads to load saved tasks from local storage
+window.onload = function() {
+  loadTasksFromStorage();
+  loadTasks('today');
+}
+
+// Whenever tasks are added, edited, or deleted, call saveTasks to persist the changes
+
+//Due Date Notification
+// Request notification permission
+function requestNotificationPermission() {
+      if (Notification.permission === "default") {
+        Notification.requestPermission().then(permission => {
+          if (permission === "granted") {
+            console.log("Notification permission granted.");
+          } else {
+            console.log("Notification permission denied.");
+          }
+        });
+      }
+    }
+
+    requestNotificationPermission();  // Request permission
+
+    // Show notification
+    function showDueDateNotification(task) {
+      const notification = new Notification("Task Due Soon", {
+        body: `Your task "${task.title}" is due on ${task.dueDate}`,
+        icon: "task-icon.png",  // Optional: Use an actual icon file
+        tag: task.id  // Optional: Tag to group notifications
+      });
+
+      notification.onclick = function () {
+        window.focus();  // Focus on the browser window if clicked
+      };
+    }
+
+    // Check for due dates and trigger notifications
+    function checkDueDateNotifications() {
+      const currentDateTime = new Date();
+      tasks.today.forEach(task => {
+        const taskDueDate = new Date(task.dueDate);
+        if (taskDueDate - currentDateTime <= 600000 && !task.completed) {  // 10 minutes before the due date
+          showDueDateNotification(task);
+        }
+      });
+    }
+
+    // Check every minute
+    setInterval(checkDueDateNotifications, 60000);
+    // Share task function
+    function shareTask(taskId) {
+  // Find the task in all categories
+  let task = null;
+  Object.keys(tasks).forEach(category => {
+    if (category !== 'team' && category !== 'notifications') { // Exclude team and notifications
+      const foundTask = tasks[category].find(t => t.id === taskId);
+      if (foundTask) task = foundTask;
+    }
+  });
+
+  if (!task) {
+    alert("Task not found!");
+    return;
+  }
+
+  // Check if task is already shared
+  if (task.shared) {
+    alert("Task already shared with the team!");
+    return;
+  }
+
+  // Mark task as shared and copy it to the 'team' category
+  task.shared = true;
+  tasks.team.push({ ...task, id: Date.now() }); // Use a unique ID for the shared task
+
+  alert("Task shared with the team successfully!");
+
+  // Reload the "Team" category if it's active
+  const activeCategory = document.getElementById("task-category-title").innerText.toLowerCase();
+  if (activeCategory === "team") {
+    loadTasks('team');
+  }
+}
+
+// Simulate a user login with some example data
+ // Function to simulate user login and store user info in localStorage
+ function simulateLogin() {
+      // Storing user data in localStorage (simulating a login)
+      localStorage.setItem('userAvatar', 'path_to_avatar.jpg'); // Example avatar path
+      localStorage.setItem('userName', 'John Doe'); // Example user name
+
+      // Update the UI based on the stored user data
+      showUserInfoFromLocalStorage();
+    }
+
+    // Function to display user info from localStorage
+    function showUserInfoFromLocalStorage() {
+      // Retrieve user info from localStorage
+      const avatar = localStorage.getItem('userAvatar');
+      const name = localStorage.getItem('userName');
+      
+      // Update the avatar and name on the page
+      document.getElementById('user-avatar').src = avatar || 'avatar.jpg'; // Default avatar if not set
+      document.getElementById('user-name').textContent = name || 'John Doe'; // Default name if not set
+    }
+
+    // Call the function to display user info when the page loads
+    window.onload = showUserInfoFromLocalStorage;
+
   </script>
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
