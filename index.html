@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional To-Do List</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-clipboard-list"></i> TO_DO</h1>
+        <p id="currentDateTime" class="current-datetime"></p>
+
+        <div class="input-section">
+            <input type="text" id="taskTitle" placeholder="Task title (e.g., Buy groceries)...">
+            <textarea id="taskDescription" placeholder="Optional: Add a description..."></textarea>
+            <div class="input-group">
+                <input type="date" id="taskDueDate" title="Due Date">
+                <select id="taskPriority" title="Priority">
+                    <option value="low">Low Priority</option>
+                    <option value="medium" selected>Medium Priority</option>
+                    <option value="high">High Priority</option>
+                </select>
+            </div>
+            <button id="addTaskBtn"><i class="fas fa-plus"></i> Add Task</button>
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="pending">Pending</button>
+            <button class="filter-btn" data-filter="completed">Completed</button>
+            <select id="priorityFilter" class="filter-select">
+                <option value="all-priorities">All Priorities</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+        </div>
+
+        <ul id="taskList">
+            </ul>
+    </div>
+
+    <div id="editTaskModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Edit Task</h2>
+            <input type="hidden" id="editTaskId">
+            <input type="text" id="editTaskTitle" placeholder="Task title">
+            <textarea id="editTaskDescription" placeholder="Task description"></textarea>
+            <input type="date" id="editTaskDueDate">
+            <select id="editTaskPriority">
+                <option value="low">Low Priority</option>
+                <option value="medium">Medium Priority</option>
+                <option value="high">High Priority</option>
+            </select>
+            <button id="saveEditBtn"><i class="fas fa-save"></i> Save Changes</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
